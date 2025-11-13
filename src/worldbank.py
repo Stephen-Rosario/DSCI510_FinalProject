@@ -1,24 +1,23 @@
-import requests
+import wbdata
 import pandas as pd
 
-def fetch_indicator(indicator_code: str, country_code: str = "PRT", start_year: int = 2010, end_year: int = 2023) -> pd.DataFrame:
-    url = f"http://api.worldbank.org/v2/country/{country_code}/indicator/{indicator_code}"
-    params = {
-        "format": "json",
-        "date": f"{start_year}:{end_year}",
-        "per_page": 100
-    }
+def fetch_indicator(indicator_code, country="PT", start=2010, end=2020):
+    # Get the full dataset (note: no convert_date)
+    data = wbdata.get_dataframe({indicator_code: "value"}, country=country)
 
-    response = requests.get(url, params=params)
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch data: {response.status_code}")
+    # Reset index to access date
+    data = data.reset_index()
 
-    data = response.json()[1] 
-    records = [
-        {"year": int(entry["date"]), "value": entry["value"]}
-        for entry in data if entry["value"] is not None
-    ]
+    # Convert 'date' column to datetime manually
+    data['date'] = pd.to_datetime(data['date'], format='%Y')
 
-    df = pd.DataFrame(records).sort_values("year").reset_index(drop=True)
-    return df
+    # Extract year and filter
+    data['year'] = data['date'].dt.year
+    data = data[(data['year'] >= start) & (data['year'] <= end)]
+
+    # Drop unnecessary columns
+    if 'country' in data.columns:
+        data = data.drop(columns='country')
+
+    return data[['year', 'value']].sort_values('year').reset_index(drop=True)
 
