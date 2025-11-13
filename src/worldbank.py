@@ -20,4 +20,3 @@ def fetch_indicator(indicator_code, country="PT", start=2010, end=2020):
         data = data.drop(columns='country')
 
     return data[['year', 'value']].sort_values('year').reset_index(drop=True)
-
