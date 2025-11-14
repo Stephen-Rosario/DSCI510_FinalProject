@@ -14,7 +14,26 @@ The final goal is to categorize student final performance (`G3`) into three labe
 
 ## Project Structure
 
-<pre lang="markdown"><code> ## Project Structure DSCI510_FinalProject/ ├── data/ # Raw and processed datasets (not tracked in GitHub) │ ├── student-mat.csv │ ├── student-por.csv │ ├── government_spending.csv │ └── enrollment_rate.csv │ ├── src/ # Source code │ ├── __init__.py │ ├── load.py │ ├── process.py │ ├── worldbank.py │ └── tests.py │ ├── main.py # Main script for loading, training, and running analysis ├── requirements.txt # Dependency list ├── .gitignore # Git ignore rules ├── README.md # Project description and documentation └── doc/ # Project reports and final PDF </code></pre>
+DSCI510_FinalProject/
+├── data/                  # Raw and processed datasets (not tracked in Git)
+│   ├── student-mat.csv
+│   ├── student-por.csv
+│   ├── government_spending.csv
+│   └── enrollment_rate.csv
+│
+├── src/                   # Source code
+│   ├── __init__.py
+│   ├── load.py
+│   ├── process.py
+│   ├── worldbank.py
+│   └── tests.py
+│
+├── main.py                # Script for loading data and running the model
+├── requirements.txt       # Python dependencies
+├── .gitignore             # Files and folders to exclude from Git
+├── README.md              # Project documentation
+└── doc/                   # Final progress report (PDF)
+
 
 ## Setup Instructions ##
 
