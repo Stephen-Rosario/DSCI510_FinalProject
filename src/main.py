@@ -1,6 +1,36 @@
 import os
+import pandas as pd
 from load import load_student_data
 from worldbank import fetch_indicator
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+def train_model(data):
+    # Select relevant numeric and categorical columns
+    feature_cols = ['sex', 'age', 'studytime', 'failures', 'absences', 'G1', 'G2', 'internet']
+    df = data.copy()
+    
+    # Encode categorical variables
+    df['sex'] = df['sex'].map({'F': 0, 'M': 1})
+    df['internet'] = df['internet'].map({'no': 0, 'yes': 1})
+
+    # Drop rows with missing or invalid values
+    df = df.dropna(subset=feature_cols + ['G3'])
+
+    X = df[feature_cols]
+    y = df['G3']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+
+    return acc, report
 
 def main():
     data_dir = os.path.join("data")
@@ -28,6 +58,13 @@ def main():
     gov_spend.to_csv(os.path.join(data_dir, "government_spending.csv"))
     enroll_rate.to_csv(os.path.join(data_dir, "enrollment_rate.csv"))
     print("\nSaved World Bank data to CSV files.")
+
+    # Train and evaluate model
+    print("\nTraining model to predict G3 (final grade)...")
+    accuracy, class_report = train_model(students)
+    print(f"\nModel Accuracy: {accuracy:.2f}")
+    print("\nClassification Report:")
+    print(class_report)
 
 if __name__ == "__main__":
     main()
