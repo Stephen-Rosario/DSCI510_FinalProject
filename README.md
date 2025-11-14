@@ -14,22 +14,7 @@ The final goal is to categorize student final performance (`G3`) into three labe
 
 ## Project Structure
 
-DSCI510_FinalProject/
-│
-├── data/ # Raw data files (excluded via .gitignore)
-├── results/ # Generated outputs (excluded via .gitignore)
-├── doc/
-│ └── progress_report.pdf
-├── src/
-│ ├── load.py # Functions to load and merge student datasets
-│ ├── process.py # Data preprocessing, feature engineering, ML training & evaluation
-│ ├── worldbank.py # Functions to fetch macro indicators from World Bank API
-│
-├── main.py # Main entry point for data loading, API call, and basic display
-├── tests.py # Unit tests for key functions
-├── requirements.txt
-├── README.md
-└── .gitignore
+<pre lang="markdown"><code> ## Project Structure DSCI510_FinalProject/ ├── data/ # Raw and processed datasets (not tracked in GitHub) │ ├── student-mat.csv │ ├── student-por.csv │ ├── government_spending.csv │ └── enrollment_rate.csv │ ├── src/ # Source code │ ├── __init__.py │ ├── load.py │ ├── process.py │ ├── worldbank.py │ └── tests.py │ ├── main.py # Main script for loading, training, and running analysis ├── requirements.txt # Dependency list ├── .gitignore # Git ignore rules ├── README.md # Project description and documentation └── doc/ # Project reports and final PDF </code></pre>
 
 ## Setup Instructions ##
 
