@@ -46,3 +46,15 @@ The final goal is to categorize student final performance (`G3`) into three labe
 4. Run the project
    ```bash
    python main.py
+
+## Testing
+
+Tests are located in `src/tests.py`.
+
+**Important**: You must manually place `student-mat.csv` and `student-por.csv` in the `data/` folder before running the tests, as these files are not committed to the repo per project requirements.
+
+To run the tests:
+
+```bash
+python -m unittest src/tests.py
+
