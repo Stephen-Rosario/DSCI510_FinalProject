@@ -24,16 +24,14 @@ The final goal is to categorize student final performance (`G3`) into three labe
    cd DSCI510_FinalProject
 
 2. Create and activate a virtual environment (optional but recommended):
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 
 3. Install dependencies:
-```bash
+   ```bash
    pip install -r requirements.txt
 
 4. Run the project
-```bash
+   ```bash
    python main.py
-
-
