@@ -1,9 +1,7 @@
 pandas
 numpy
-requests
-scikit-learn
-xgboost
 matplotlib
 seaborn
-shap
-python-dotenv
+scikit-learn
+wbdata
+jupyter
