@@ -23,6 +23,7 @@ All logic is modularized inside the src/ directory and can be executed through a
 
 ## Project Structure
 
+```text
 DSCI510_FinalProject/
 │
 ├── src/
@@ -43,7 +44,7 @@ DSCI510_FinalProject/
 ├── .env.example
 ├── .gitignore
 └── README.md
-
+```
 
 ## Data Sources
 UCI Student Performance Dataset
