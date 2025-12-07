@@ -1,30 +1,177 @@
-# Student Performance Predictor
+# Student Performance Analysis Using UCI Dataset & World Bank Indicators
 
-This project was developed for USC’s DSCI-510 Final Project. It explores how student-level and macroeconomic factors influence academic outcomes. Using classification models, we aim to identify students at risk of poor performance and uncover what features contribute most to success.
+DSCI-510 Final Project — Fall 2025
+Author: Stephen Rosario
 
-## Project Overview
+# Introduction
 
-We combine:
-- **Student-level data**: From the UCI Student Performance Dataset (Portuguese and Math tracks).
-- **Macro-level data**: World Bank API data for:
-  - Government expenditure on education (% of GDP)
-  - Tertiary school enrollment (% gross)
+This project analyzes academic performance using the UCI “Student Performance” dataset and enhances it with educational macroeconomic indicators retrieved from the World Bank API.
+The goal is to build an automated, reproducible data pipeline that:
 
-The final goal is to categorize student final performance (`G3`) into three labels — *poor*, *average*, and *excellent* — and evaluate the effectiveness of a Random Forest classifier.
+Loads and preprocesses student-level data
+
+Fetches country-level macro indicators for 20 European countries
+
+Merges UCI and World Bank features
+
+Trains a machine learning classification model
+
+Evaluates results and generates visual insights
+
+All logic is modularized inside the src/ directory and can be executed through a single command or via the provided Jupyter notebook.
 
 ## Project Structure
 
-- `data/` - Contains student and macroeconomic CSV data (not tracked in Git)
-- `src/` - Source code modules:
-  - `load.py` - Loads and merges student datasets
-  - `process.py` - Data processing, feature engineering, and model training
-  - `worldbank.py` - Fetches World Bank API data
-  - `tests.py` - Unit tests for project modules
-- `main.py` - Main script to run data loading and model pipeline
-- `requirements.txt` - Lists Python dependencies
-- `.gitignore` - Specifies files and folders to exclude from version control
-- `doc/` - Contains the final progress report (PDF)
-- `README.md` - Project overview and setup instructions
+DSCI510_FinalProject/
+│
+├── src/
+│   ├── load_data.py
+│   ├── preprocess.py
+│   ├── worldbank.py
+│   ├── model.py
+│   ├── analysis.py
+│   ├── main.py
+│   └── tests.py
+│
+├── docs/
+│   └── FinalProjectSlides.pdf
+│
+├── results/                # Auto-generated outputs (plots, metrics)
+├── results.ipynb           # Notebook wrapper to run the full pipeline
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+
+## Data Sources
+UCI Student Performance Dataset
+
+Contains demographic, behavioral, academic, and family-related attributes.
+
+Used as the primary student-level dataset.
+
+Automatically downloaded if missing.
+
+World Bank API Indicators
+
+Fetched for 20 European countries:
+
+SE.XPD.TOTL.GD.ZS — Education expenditure (% of GDP)
+
+SE.TER.ENRR — Tertiary enrollment rate (%)
+
+Countries are listed in .env.example.
+
+## Analysis Summary
+
+The project explores how both individual factors (e.g., study time, internet access, family background) and macro-level educational investment correlate with academic performance.
+
+Key steps include:
+
+Data cleaning and feature engineering
+
+Merging World Bank indicators into student records
+
+Random Forest classification model
+
+Performance evaluation (precision, recall, F1-score)
+
+Statistical testing (t-test for internet access impact)
+
+Visualization of trends and correlations
+
+Model accuracy reached 1.0 on this dataset due to the strong separability within the labeled categories.
+
+## Modeling Approach
+
+Split dataset into training/testing sets
+
+Apply preprocessing (encoding, normalization)
+
+Train a Random Forest classifier
+
+Evaluate using:
+
+Classification report
+
+Confusion matrix
+
+Generate plots including:
+
+Study time distribution
+
+Correlation heatmap
+
+Feature relationships
+
+T-test results
+
+## Results
+
+Dataset merged successfully with macro indicators
+
+Final dataset contains 1044 rows and 33 columns
+
+Classification performance:
+
+Accuracy: 1.000
+
+Perfect precision, recall, F1 across all classes
+
+Statistically significant difference (p < 0.001) between students with vs. without internet access
+
+All plots are saved to the results/ folder upon running the pipeline
+
+## How to Run the Pipeline
+1. Install dependencies
+pip install -r requirements.txt
+
+2. Create your .env file
+
+From the provided template:
+
+cp .env.example .env
+
+3. Run the full pipeline
+python main.py
+
+
+OR using the notebook:
+
+Open results.ipynb and run:
+
+from src.main import run_pipeline
+run_pipeline()
+
+
+This performs all steps from downloading data to generating final visualizations.
+
+## Testing
+
+Tests are contained in:
+
+src/tests.py
+
+
+Run tests using:
+
+pytest
+
+## Conclusion
+
+This project demonstrates how combining student-level datasets with macro-level educational indicators can enhance insights into academic performance.
+The pipeline is fully automated, reproducible, and organized using modular architecture recommended in professional data science workflows.
+
+## Contact
+
+Stephen Rosario
+USC Viterbi School of Engineering
+Email: sr68334@usc.edu
+
+
+
+
+
 
 
 ## Setup Instructions ##
