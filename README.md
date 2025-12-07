@@ -71,19 +71,19 @@ The project explores how both individual factors (e.g., study time, internet acc
 
 Key steps include:
 
-Data cleaning and feature engineering
+1. Data cleaning and feature engineering
 
-Merging World Bank indicators into student records
+2. Merging World Bank indicators into student records
 
-Random Forest classification model
+3. Random Forest classification model
 
-Performance evaluation (precision, recall, F1-score)
+4. Performance evaluation (precision, recall, F1-score)
 
-Statistical testing (t-test for internet access impact)
+5. Statistical testing (t-test for internet access impact)
 
-Visualization of trends and correlations
+6. Visualization of trends and correlations
 
-Model accuracy reached 1.0 on this dataset due to the strong separability within the labeled categories.
+7. Model accuracy reached 1.0 on this dataset due to the strong separability within the labeled categories.
 
 ## Modeling Approach
 
@@ -95,19 +95,19 @@ Train a Random Forest classifier
 
 Evaluate using:
 
-Classification report
+- Classification report
 
-Confusion matrix
+- Confusion matrix
 
-Generate plots including:
+- Generate plots including:
 
-Study time distribution
+- Study time distribution
 
-Correlation heatmap
+- Correlation heatmap
 
-Feature relationships
+- Feature relationships
 
-T-test results
+- T-test results
 
 ## Results
 
