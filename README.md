@@ -1,6 +1,7 @@
 # Student Performance Analysis Using UCI Dataset & World Bank Indicators
 
 DSCI-510 Final Project — Fall 2025
+
 Author: Stephen Rosario
 
 # Introduction
