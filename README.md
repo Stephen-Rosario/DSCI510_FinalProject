@@ -9,15 +9,15 @@ Author: Stephen Rosario
 This project analyzes academic performance using the UCI “Student Performance” dataset and enhances it with educational macroeconomic indicators retrieved from the World Bank API.
 The goal is to build an automated, reproducible data pipeline that:
 
-Loads and preprocesses student-level data
+- Loads and preprocesses student-level data
 
-Fetches country-level macro indicators for 20 European countries
+- Fetches country-level macro indicators for 20 European countries
 
-Merges UCI and World Bank features
+- Merges UCI and World Bank features
 
-Trains a machine learning classification model
+- Trains a machine learning classification model
 
-Evaluates results and generates visual insights
+- Evaluates results and generates visual insights
 
 All logic is modularized inside the src/ directory and can be executed through a single command or via the provided Jupyter notebook.
 
@@ -168,5 +168,7 @@ The pipeline is fully automated, reproducible, and organized using modular archi
 ## Contact
 
 Stephen Rosario
+
 USC Viterbi School of Engineering
+
 Email: sr68334@usc.edu
