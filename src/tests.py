@@ -1,54 +1,59 @@
+"""
+Basic unit tests for the DSCI 510 final project.
+
+Run from the project root as:
+    python -m src.tests
+"""
+
 import unittest
-import pandas as pd
 
 from src.load_data import load_student_data
-from src.preprocess import preprocess_data
-from src.model import train_model
-from src.analysis import compute_ttest
+from src.preprocess import preprocess
+from src.model import train_test_split_and_train
+from src.analysis import run_t_test
 
 
 class TestProject(unittest.TestCase):
-
     def test_load_data(self):
-        """Test that the UCI dataset loads and contains expected columns."""
+        """Raw UCI data loads with expected shape and columns."""
         df = load_student_data()
 
-        # Basic checks
-        self.assertIsInstance(df, pd.DataFrame)
-        self.assertGreater(len(df), 0)
+        # UCI combined dataset should have 1044 rows
+        self.assertEqual(df.shape[0], 1044)
 
-        # Case-insensitive column check
-        cols_lower = [col.lower() for col in df.columns]
-        self.assertIn("g3", cols_lower)
-        self.assertIn("internet", cols_lower)
+        # Raw data should still have original 'G3' column name
+        self.assertIn("G3", df.columns)
 
-    def test_preprocess_data(self):
-        """Ensure preprocess removes NA and creates proper output."""
+    def test_preprocess(self):
+        """Preprocessing creates lower-case columns and a performance label."""
         df = load_student_data()
-        processed = preprocess_data(df)
+        processed = preprocess(df)
 
-        self.assertGreater(len(processed), 0)
-        self.assertNotIn(processed.isna().sum().sum(), [None, float("nan")])
-        self.assertIn("G3", processed.columns)  # original case preserved
+        # After preprocessing, columns are lower-case
+        self.assertIn("g3", processed.columns)
 
-    def test_train_model(self):
-        """Train a model and ensure accuracy metric is returned."""
-        df = load_student_data()
-        df = preprocess_data(df)
+        # New target label must exist
+        self.assertIn("performance", processed.columns)
 
-        model, X_test, y_test, accuracy = train_model(df)
+        # No missing labels
+        self.assertFalse(processed["performance"].isna().any())
 
-        self.assertIsNotNone(model)
-        self.assertIsInstance(accuracy, float)
-        self.assertGreaterEqual(accuracy, 0.0)
-        self.assertLessEqual(accuracy, 1.0)
+    def test_model_training(self):
+        """Model training returns predictions of correct length."""
+        df = preprocess(load_student_data())
+        model, X_test, y_test, y_pred = train_test_split_and_train(df)
 
-    def test_ttest(self):
-        """Check t-test output structure."""
-        df = load_student_data()
-        df = preprocess_data(df)
+        # Predictions and true labels should be same length
+        self.assertEqual(len(y_test), len(y_pred))
 
-        t_stat, p_value = compute_ttest(df)
+        # Sanity-check: accuracy is at least better than random
+        acc = (y_test == y_pred).mean()
+        self.assertGreaterEqual(acc, 0.5)
+
+    def test_t_test_runs(self):
+        """t-test helper returns numeric statistics."""
+        df = preprocess(load_student_data())
+        t_stat, p_value = run_t_test(df)
 
         self.assertIsInstance(t_stat, float)
         self.assertIsInstance(p_value, float)
@@ -56,4 +61,3 @@ class TestProject(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
