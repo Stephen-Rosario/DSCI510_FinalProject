@@ -208,5 +208,9 @@ __marimo__/
 
 # Do not track these project-specific folders and files
 .env
-data/
+.env.*
+data/ 
+*.csv 
+*.xlsx 
+*.parquet 
 results/
