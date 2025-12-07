@@ -1,32 +1,33 @@
-# src/model.py
+# src/model.p
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-def train_random_forest(data, target="G3"):
-    # Drop rows with missing values
-    data = data.dropna(subset=[target])
+def split_data(df: pd.DataFrame, target="performance"):
+    X = df.drop(columns=[target])
+    y = df[target]
+    return train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Features to use (drop non-predictive or post-outcome columns)
-    features = data.drop(columns=["G1", "G2", "G3", "subject"])
-    features = pd.get_dummies(features, drop_first=True)
+def train_model(X_train, y_train, use_gridsearch=False):
+    if use_gridsearch:
+        params = {
+            "n_estimators": [100, 200],
+            "max_depth": [5, 10, None],
+            "min_samples_split": [2, 5, 10],
+        }
+        grid = GridSearchCV(RandomForestClassifier(random_state=42), params, cv=3, n_jobs=-1)
+        grid.fit(X_train, y_train)
+        return grid.best_estimator_
+    else:
+        model = RandomForestClassifier(random_state=42)
+        model.fit(X_train, y_train)
+        return model
 
-    # Labels
-    labels = data[target]
+def evaluate_model(model, X_test, y_test):
+    preds = model.predict(X_test)
+    acc = accuracy_score(y_test, preds)
+    report = classification_report(y_test, preds)
+    cm = confusion_matrix(y_test, preds)
+    return acc, report, cm
 
-    # Train/test split
-    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
-
-    # Model
-    model = RandomForestRegressor(random_state=42)
-    model.fit(X_train, y_train)
-
-    # Predictions
-    y_pred = model.predict(X_test)
-
-    # Metrics
-    rmse = mean_squared_error(y_test, y_pred, squared=False)
-    r2 = r2_score(y_test, y_pred)
-
-    return model, rmse, r2
