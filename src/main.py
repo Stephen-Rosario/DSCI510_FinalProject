@@ -1,71 +1,86 @@
-import os
-import pandas as pd
-from load import load_student_data
-from worldbank import fetch_indicator
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
+from pathlib import Path
 
-def train_model(data):
-    # Select relevant numeric and categorical columns
-    feature_cols = ['sex', 'age', 'studytime', 'failures', 'absences', 'G1', 'G2', 'internet']
-    df = data.copy()
-    
-    # Encode categorical variables
-    df['sex'] = df['sex'].map({'F': 0, 'M': 1})
-    df['internet'] = df['internet'].map({'no': 0, 'yes': 1})
+from .load_data import load_student_data
+from .preprocess import preprocess
+from .worldbank import fetch_worldbank_data, merge_macro_features
+from .model import split_data, train_model, evaluate_model
+from .analysis import (
+    plot_grade_distribution,
+    plot_studytime,
+    correlation_heatmap,
+    internet_ttest,
+)
 
-    # Drop rows with missing or invalid values
-    df = df.dropna(subset=feature_cols + ['G3'])
 
-    X = df[feature_cols]
-    y = df['G3']
+def ensure_results_dir(path: str = "results"):
+    """Ensure results directory exists."""
+    Path(path).mkdir(parents=True, exist_ok=True)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+def run_pipeline():
+    print("=== Student Performance Pipeline ===")
 
-    acc = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
+    # Ensure results folder exists
+    ensure_results_dir()
 
-    return acc, report
+    # -------------------------------------------------
+    # 1. Load UCI Data
+    # -------------------------------------------------
+    print("Loading UCI student datasets...")
+    df = load_student_data()
+    print(f"Loaded dataset with {df.shape[0]} rows and {df.shape[1]} columns.")
 
-def main():
-    data_dir = os.path.join("data")
-    os.makedirs(data_dir, exist_ok=True)
+    # -------------------------------------------------
+    # 2. Preprocessing
+    # -------------------------------------------------
+    print("Preprocessing data...")
+    df = preprocess(df)
 
-    math_path = os.path.join(data_dir, "student-mat.csv")
-    por_path = os.path.join(data_dir, "student-por.csv")
+    # -------------------------------------------------
+    # 3. World Bank Data
+    # -------------------------------------------------
+    print("Fetching macro indicators from the World Bank API...")
+    macro_df = fetch_worldbank_data()
+    df = merge_macro_features(df, macro_df)
+    print("World Bank macro features merged into dataset.")
 
-    print("Loading student data...")
-    students = load_student_data(math_path, por_path)
-    print(f"Loaded {students.shape[0]} rows and {students.shape[1]} columns")
-    print(students.head())
+    # -------------------------------------------------
+    # 4. Modeling Pipeline
+    # -------------------------------------------------
+    print("Splitting data and training model...")
+    X_train, X_test, y_train, y_test = split_data(df, target="performance")
 
-    print("\nFetching macro-level education data...")
-    gov_spend = fetch_indicator("SE.XPD.TOTL.GD.ZS")  # Government spending
-    enroll_rate = fetch_indicator("SE.TER.ENRR")      # Tertiary enrollment
+    model = train_model(
+        X_train,
+        y_train,
+        use_gridsearch=True  # enables extra credit
+    )
 
-    print("\nGovernment Spending Data:")
-    print(gov_spend.head())
+    print("Evaluating model...")
+    accuracy, confusion, report = evaluate_model(model, X_test, y_test)
 
-    print("\nEnrollment Rate Data:")
-    print(enroll_rate.head())
-
-    # Save fetched data
-    gov_spend.to_csv(os.path.join(data_dir, "government_spending.csv"))
-    enroll_rate.to_csv(os.path.join(data_dir, "enrollment_rate.csv"))
-    print("\nSaved World Bank data to CSV files.")
-
-    # Train and evaluate model
-    print("\nTraining model to predict G3 (final grade)...")
-    accuracy, class_report = train_model(students)
-    print(f"\nModel Accuracy: {accuracy:.2f}")
+    print(f"\nMODEL ACCURACY: {accuracy:.4f}")
     print("\nClassification Report:")
-    print(class_report)
+    print(report)
+    print("\nConfusion Matrix:")
+    print(confusion)
 
-if __name__ == "__main__":
-    main()
+    # -------------------------------------------------
+    # 5. Analysis + Plots
+    # -------------------------------------------------
+    print("Generating visualizations...")
+
+    plot_grade_distribution(df)
+    plot_studytime(df)
+    correlation_heatmap(df)
+
+    print("Running t-test (Internet vs. No Internet)...")
+    t_stat, p_val = internet_ttest(df)
+    print(f"T-Test → t={t_stat:.4f}, p={p_val:.4f}")
+
+    # -------------------------------------------------
+    # DONE
+    # -------------------------------------------------
+    print("\nPipeline complete. All plots saved to the 'results' folder.\n")
+
 
