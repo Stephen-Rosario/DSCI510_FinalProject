@@ -8,8 +8,8 @@ UCI_POR_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00320/s
 
 def download_student_data(data_dir: str = "data"):
     """
-    Downloads the UCI student performance datasets (Math + Portuguese)
-    if they do not already exist locally.
+    Download the UCI student performance datasets (Math + Portuguese)
+    if they are not already present locally.
     """
     data_path = Path(data_dir)
     data_path.mkdir(parents=True, exist_ok=True)
@@ -30,7 +30,7 @@ def download_student_data(data_dir: str = "data"):
 
 def load_student_data(data_dir: str = "data") -> pd.DataFrame:
     """
-    Ensures datasets are downloaded, then loads + merges them.
+    Ensure the UCI datasets are downloaded, then load and merge them.
     """
     mat_path, por_path = download_student_data(data_dir)
     df_mat = pd.read_csv(mat_path)
