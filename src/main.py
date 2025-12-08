@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from .load_data import load_student_data
-from .preprocess import preprocess
+from .preprocess import preprocess_data
 from .worldbank import fetch_worldbank_data, merge_macro_features
 from .model import split_data, train_model, evaluate_model
 from .analysis import (
