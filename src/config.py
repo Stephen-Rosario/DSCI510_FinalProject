@@ -2,10 +2,10 @@
 config.py
 
 Central place for all constant configuration values:
-- file paths
-- file names
-- World Bank settings
-- plot output paths
+- project paths
+- data file paths
+- World Bank configuration
+- plot output filenames
 """
 
 from pathlib import Path
@@ -15,14 +15,14 @@ from pathlib import Path
 # -------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-# Local data directory (NOT tracked in git)
+# Local data directory (NOT tracked in git – should be in .gitignore)
 DATA_DIR = PROJECT_ROOT / "data"
 
 # Results / plots directory
 RESULTS_DIR = PROJECT_ROOT / "results"
 
 # -------------------------------------------------------------------
-# Raw data file names (inside DATA_DIR)
+# Raw data file paths (inside DATA_DIR)
 # -------------------------------------------------------------------
 MAT_FILE = DATA_DIR / "student-mat.csv"
 POR_FILE = DATA_DIR / "student-por.csv"
@@ -30,14 +30,13 @@ POR_FILE = DATA_DIR / "student-por.csv"
 # -------------------------------------------------------------------
 # World Bank configuration
 # -------------------------------------------------------------------
+# Indicators: mapping WB code -> column name used in our dataframe
 WORLD_BANK_INDICATORS = {
-    # Government education spending (% of GDP)
-    "SE.XPD.TOTL.GD.ZS": "edu_spend_pct_gdp",
-    # Gross tertiary enrollment (%)
-    "SE.TER.ENRR": "tertiary_enrollment",
+    "SE.XPD.TOTL.GD.ZS": "edu_spend_pct_gdp",     # Gov. education spend (% GDP)
+    "SE.TER.ENRR": "tertiary_enrollment",         # Gross tertiary enrollment (%)
 }
 
-# 20 European countries geographically/economically close to Portugal
+# 20 European countries around Portugal / EU context
 WORLD_BANK_EUROPE_20 = [
     "PRT",  # Portugal
     "ESP",  # Spain
