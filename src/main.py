@@ -30,7 +30,7 @@ def run_pipeline():
 
     # 2. Preprocess data
     print("Preprocessing data...")
-    df = preprocess(df)
+    df = preprocess_data(df)
 
     # 3. World Bank Data
     print("Fetching macro indicators from the World Bank API...")
