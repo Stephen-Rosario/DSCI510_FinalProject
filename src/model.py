@@ -4,15 +4,20 @@ Provides functions for splitting data, training the machine learning model,
 and producing evaluation outputs.
 """
 
+from typing import Tuple
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.base import ClassifierMixin
 
 
-def train_test_split_and_train(df):
+def train_test_split_and_train(
+    df: pd.DataFrame,
+) -> Tuple[ClassifierMixin, pd.DataFrame, pd.Series, pd.Series]:
     """
-    Splits data into train/test sets, trains a RandomForest model,
-    and returns model + X_test + y_test + predictions.
+    Split data into train/test sets, train a RandomForest model,
+    and return model + X_test + y_test + predictions.
 
     Parameters
     ----------
@@ -27,7 +32,7 @@ def train_test_split_and_train(df):
         Test features.
     y_test : pandas.Series
         True test labels.
-    y_pred : numpy.ndarray
+    y_pred : pandas.Series
         Predictions for the test set.
     """
 
@@ -45,16 +50,14 @@ def train_test_split_and_train(df):
         y,
         test_size=0.2,
         random_state=42,
-        stratify=y
+        stratify=y,
     )
 
     # Train the model
     model = RandomForestClassifier(random_state=42)
     model.fit(X_train, y_train)
 
-    # Predictions
-    y_pred = model.predict(X_test)
+    # Predictions as a pandas Series for compatibility with tests
+    y_pred = pd.Series(model.predict(X_test), index=y_test.index)
 
     return model, X_test, y_test, y_pred
-
-
